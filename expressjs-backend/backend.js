@@ -1,8 +1,9 @@
-// TODO: implement request to GET all users matching given name and job
-
 const express = require('express');
 const app = express();
 const port = 5000;
+
+const cors = require('cors');       // imports CORS library
+app.use(cors());                    // enable All CORS requests
 
 app.use(express.json());
 
