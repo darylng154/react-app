@@ -25,7 +25,8 @@ return (  // return for MyApp()
 )
 
 function removeOneCharacter (index) {
-const updated = characters.filter((character, i) => {
+  makeDeleteIdCall(characters.at(index).id);
+  const updated = characters.filter((character, i) => {
     return i !== index
   });
   setCharacters(updated);
@@ -33,7 +34,7 @@ const updated = characters.filter((character, i) => {
 
 function updateList(person) { 
   makePostCall(person).then( result => {
-    if (result && result.status === 200)
+    if (result && result.status === 201)
       setCharacters([...characters, person] );
   });
 }
@@ -59,6 +60,17 @@ async function makePostCall(person){
   catch (error) {
      console.log(error);
      return false;
+  }
+}
+
+async function makeDeleteIdCall(id){
+  try {
+     const response = await axios.delete(`http://localhost:5000/users/${id}`);
+     return response.data.users_list;     
+  }
+  catch (error){
+     console.log(error); 
+     return false;         
   }
 }
 

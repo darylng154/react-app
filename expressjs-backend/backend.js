@@ -3,6 +3,7 @@ const app = express();
 const port = 5000;
 
 const cors = require('cors');       // imports CORS library
+const MAXUSERS = 10;
 app.use(cors());                    // enable All CORS requests
 
 app.use(express.json());
@@ -24,7 +25,7 @@ const filterUsers = (req_query, field, list) => {
 } 
 
 function findIndexById(id) {
-    return users['users_list'].indexOf( (user) => user['id'] === id);
+    return users['users_list'].findIndex( (user) => user['id'] === id);
 }
 
 function findUserById(id) {
@@ -78,18 +79,30 @@ app.get('/users/:id', (req, res) => {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(200).end();
+    res.status(201).send(userToAdd);
 });
 
+function generateRandomId(user)
+{
+    const min = 0;
+    const max = MAXUSERS-1;
+    let id = (Math.floor(Math.random() * max) + min).toString();
+    return id;     // generates random number ID
+}
+
 function addUser(user){
+    user.id = generateRandomId(user);
+    // user.id = (Math.floor(Math.random * max) + min);
     users['users_list'].push(user);
 }
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = findIndexById(id);
-    if (result === undefined)
-        res.status(404).send('Resource not found.');    //204 (No content)
+    // console.log(`delete result: ${result}`);     // debugging results
+
+    if (result === undefined || result == -1)
+        res.status(404).send('Resource not found.');
     else {
         deleteUser(result);
         res.status(204).end();
@@ -97,7 +110,8 @@ app.delete('/users/:id', (req, res) => {
 });
 
 function deleteUser(user){
-    users['users_list'].splice(user);
+    let deleteCount = 1;
+    users['users_list'].splice(user, deleteCount);
 }
 
 const users = { 
