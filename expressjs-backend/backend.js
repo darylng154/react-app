@@ -3,7 +3,7 @@ const app = express();
 const port = 5000;
 
 const cors = require('cors');       // imports CORS library
-const MAXUSERS = 10;
+const MAXUSERS = 1000;
 app.use(cors());                    // enable All CORS requests
 
 app.use(express.json());
@@ -82,7 +82,7 @@ app.post('/users', (req, res) => {
     res.status(201).send(userToAdd);
 });
 
-function generateRandomId(user)
+function generateRandomId()
 {
     const min = 0;
     const max = MAXUSERS-1;
@@ -92,7 +92,6 @@ function generateRandomId(user)
 
 function addUser(user){
     user.id = generateRandomId(user);
-    // user.id = (Math.floor(Math.random * max) + min);
     users['users_list'].push(user);
 }
 
